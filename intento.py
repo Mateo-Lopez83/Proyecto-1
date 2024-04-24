@@ -151,43 +151,44 @@ def solve(parejas):
     
 def main():
     n, w1, w2 = 3, 4,5
-    lista=[(1, 2),(1, 3),(1, 37),(1, 5),(1, 30),(3, 37),(5,30)]
-    #lista = [(1,3),(-6,3),(1,7)]
-    #lista = [(1,2),(2,3),(4,4)]
-    diccionario  ={}
-    diccionario_inv = {}
-    contador = 0
-    atomos_libres = set()
-    for comp in lista:
-        atomos_libres.add(comp[0])
-        atomos_libres.add(-comp[0])
-        atomos_libres.add(comp[1])
-        atomos_libres.add(-comp[1])
-        if comp[0] not in diccionario.values():
-            diccionario[contador] = comp[0]
-            diccionario_inv[comp[0]] = contador
-            contador+=1
-        if comp[1] not in diccionario.values():
-            diccionario[contador] = comp[1]
-            diccionario_inv[comp[1]] = contador
-            contador+=1
-        if -comp[0] not in diccionario.values():
-            diccionario[contador] = -comp[0]
-            diccionario_inv[-comp[0]] = contador
-            contador+=1
-        if -comp[1] not in diccionario.values():
-            diccionario[contador] = -comp[1]
-            diccionario_inv[-comp[1]] = contador
-            contador+=1
-
-    matriz = crear_matriz(len(atomos_libres))
-    matriz = llenar_matriz(matriz,diccionario, w1,w2,len(atomos_libres))
-
-    distancias, caminos = FloydWarshall(matriz, len(matriz),diccionario)
-    resp = ""
-    LTPs = 0
+    lista=[(1, 2),(1, 3),(1, 37),(1, 5),(1, 30),(3, 37),(5,30),(15,7)]
     euler = solve(lista)
     if euler is not None:
+    #lista = [(1,3),(-6,3),(1,7)]
+    #lista = [(1,2),(2,3),(4,4)]
+        diccionario  ={}
+        diccionario_inv = {}
+        contador = 0
+        atomos_libres = set()
+        for comp in lista:
+            atomos_libres.add(comp[0])
+            atomos_libres.add(-comp[0])
+            atomos_libres.add(comp[1])
+            atomos_libres.add(-comp[1])
+            if comp[0] not in diccionario.values():
+                diccionario[contador] = comp[0]
+                diccionario_inv[comp[0]] = contador
+                contador+=1
+            if comp[1] not in diccionario.values():
+                diccionario[contador] = comp[1]
+                diccionario_inv[comp[1]] = contador
+                contador+=1
+            if -comp[0] not in diccionario.values():
+                diccionario[contador] = -comp[0]
+                diccionario_inv[-comp[0]] = contador
+                contador+=1
+            if -comp[1] not in diccionario.values():
+                diccionario[contador] = -comp[1]
+                diccionario_inv[-comp[1]] = contador
+                contador+=1
+
+        matriz = crear_matriz(len(atomos_libres))
+        matriz = llenar_matriz(matriz,diccionario, w1,w2,len(atomos_libres))
+
+        distancias, caminos = FloydWarshall(matriz, len(matriz),diccionario)
+        resp = ""
+        LTPs = 0
+    
         for indice in range(len(euler)):
             pareja = euler[indice]
             conectado = int(pareja[1])
