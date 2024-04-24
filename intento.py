@@ -183,14 +183,6 @@ def main():
     matriz = crear_matriz(len(atomos_libres))
     matriz = llenar_matriz(matriz,diccionario, w1,w2,len(atomos_libres))
 
-    #print(matriz)
-    '''
-    print(matriz[diccionario_inv[1]][diccionario_inv[-1]])
-    print(matriz[diccionario_inv[30]][diccionario_inv[-37]])
-    print(matriz[diccionario_inv[5]][diccionario_inv[-5]])
-    print(matriz[diccionario_inv[-1]][diccionario_inv[-3]])
-    print(matriz[diccionario_inv[30]][diccionario_inv[30]])
-    print(matriz[diccionario_inv[2]][diccionario_inv[-2]])'''
     distancias, caminos = FloydWarshall(matriz, len(matriz),diccionario)
     resp = ""
     LTPs = 0
@@ -204,7 +196,8 @@ def main():
             if indice!= len(euler)-1:
                 LTPs += costo
             camino  = caminos[diccionario_inv[conectado]][diccionario_inv[-conectado]]
-            camino.pop(0)
+            if len(camino)>2:
+                camino.pop(0)
             resp += str(pareja)
                 
             if indice!= len(euler)-1:
