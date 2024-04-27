@@ -163,7 +163,6 @@ def main():
 
         diccionario  ={}
         euler = fleury(lista)
-        print("camino encontrado")
         if euler is not None:
             diccionario  ={}
             diccionario_inv = {}
@@ -193,25 +192,29 @@ def main():
             tamano = len(atomos_libres)
             matriz = []
             for i in range(tamano):
-            # Crea una nueva fila
                 fila = [0] * tamano
                 matriz.append(fila)
             matriz = llenar_matriz(matriz,diccionario, w1,w2,tamano) 
-            dicc_minimos = {}
-            for source in atomos_libres: 
-                tupla = dijkstra(matriz,len(matriz),diccionario,diccionario_inv[source],diccionario_inv) 
-                dicc_minimos[source]= tupla
+            dicc_minimos = {}  
+                
             resp = ""
             LTPs = 0
         
             for indice in range(len(euler)):
                 pareja = euler[indice]
                 conectado = int(pareja[1])
-                
-                costo = dicc_minimos[conectado][1]
+                if conectado not in dicc_minimos.keys():
+                    tupla = dijkstra(matriz,len(matriz),diccionario,diccionario_inv[conectado],diccionario_inv) 
+                    costo = tupla[1]
+                    camino  = tupla[0]
+                    dicc_minimos[conectado]= tupla
+                else:
+                    tupla = dicc_minimos[conectado]
+                    costo = dicc_minimos[conectado][1]
+                    camino  = dicc_minimos[conectado][0]
                 if indice!= len(euler)-1:
                     LTPs += costo
-                camino  = dicc_minimos[conectado][0]
+                
                 if len(camino)>2:
                     camino.pop(0)
                 resp += str(pareja)
