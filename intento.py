@@ -1,7 +1,33 @@
-import sys
-import random
+from sys import stdin
+import time
+import queue
 
-def FloydWarshall(graph, n, index_atom):
+def dijkstra(graph, n, diccionario, source,diccionario_inv):
+    distances = [float("inf")] * n
+    distances[source] = 0
+    path = [[] for _ in range(n)]
+    visited = [False] * n
+    colapq = queue.PriorityQueue()
+    colapq.put((0, source))
+    while not colapq.empty():
+        distancia, nodo = colapq.get()
+        if visited[nodo]:
+            continue
+        visited[nodo] = True
+        for vecino, LTP in enumerate(graph[nodo]):
+            if not visited[vecino] and LTP != float("inf"):
+                distanciaN = distances[nodo] + LTP
+                if distanciaN < distances[vecino]:
+                    distances[vecino] = distanciaN
+                    colapq.put((distanciaN, vecino))
+                    path[vecino] = path[nodo] + [diccionario[nodo]]
+    opuesto = diccionario_inv[-diccionario[source]]
+    camino_opuesto = path[opuesto]+[diccionario[opuesto]]
+    costo = distances[opuesto]
+    return (camino_opuesto, costo)
+            
+
+'''def FloydWarshall(graph, n, index_atom):
     distances = [[float("inf") for _ in range(n)] for _ in range(n)]
     path = [[[] for _ in range(n)] for _ in range(n)]
 
@@ -23,7 +49,7 @@ def FloydWarshall(graph, n, index_atom):
                     if path[i][k] and path[k][j]:
                         path[i][j] = path[i][k][:-1] + path[k][j]
 
-    return distances, path
+    return distances, path'''
 
 def calcular_LTP(m1, m2, w1, w2):
     if (m1>=0) == (m2>=0):
@@ -46,51 +72,17 @@ def llenar_matriz(matriz, diccionario, w1, w2, n):
                 matriz[i][j] =calcular_LTP(m1, m2, w1, w2) 
     return matriz
 
-
-def crear_matriz(tamano):
-    # Matriz tiene que ser nxn y simetrica
-    matriz = []
-    for i in range(tamano):
-        # Crea una nueva fila
-        fila = [0] * tamano
-        matriz.append(fila)
-    return matriz
-
-def crearGrafo(lista, matriz, caminos,indice_a_numero, numero_a_indice):
-    vertices = []
-    lista_ady = [[]]*(2*len(lista))
-    diccionario_caminos = {}
-    posicion = 0
-    for i in range(len(lista)):
-        atom1 = lista[i][0]
-        atom2 = lista[i][1]
-        vertices.append(atom1)
-        vertices.append(atom2)
-        i = numero_a_indice[atom1]
-        j = numero_a_indice[atom2]
-        lista_ady[posicion].append((atom1))
-    for num1 in range(len(vertices)-1):
-        for num2 in range(num1+1,len(vertices)):
-            val1 = vertices[num1]
-            val2 = vertices[num2]
-            if val1 == val2:
-                i = numero_a_indice[val1]
-                j = numero_a_indice[val2]
-                rand = random.randint(0,2000)
-                lista_ady[num1].append((num1,num2,matriz[i][j],))
-                
-                
-            
         
 def impares(graph):
-    odd_vertex = None
+    impar = None
+    a = graph.items()
     for node, neighbors in graph.items():
-        if odd_vertex is None:
-            odd_vertex = node
+        if impar is None:
+            impar = node
         if len(neighbors) % 2 == 1:
-            odd_vertex = node
+            impar = node
             break
-    return odd_vertex
+    return impar
 
 
 def hay_dfs(v, u, graph):
@@ -126,12 +118,11 @@ def construir(parejas):
     return graph
 
 
-def solve(parejas):
+def fleury(parejas):
     graph = construir(parejas)
-    num = len(parejas)
     inicial = impares(graph)
     path = []
-    for contador in range(num):
+    for contador in range(len(parejas)):
         neighbors = graph[inicial]
         for u in neighbors:
             graph[inicial].remove(u)
@@ -150,69 +141,97 @@ def solve(parejas):
         
     
 def main():
-    n, w1, w2 = 3, 4,5
-    lista=[(1, 2),(1, 3),(1, 37),(1, 5),(1, 30),(3, 37),(5,30),(15,7)]
-    euler = solve(lista)
-    if euler is not None:
-    #lista = [(1,3),(-6,3),(1,7)]
-    #lista = [(1,2),(2,3),(4,4)]
-        diccionario  ={}
-        diccionario_inv = {}
-        contador = 0
-        atomos_libres = set()
-        for comp in lista:
-            atomos_libres.add(comp[0])
-            atomos_libres.add(-comp[0])
-            atomos_libres.add(comp[1])
-            atomos_libres.add(-comp[1])
-            if comp[0] not in diccionario.values():
-                diccionario[contador] = comp[0]
-                diccionario_inv[comp[0]] = contador
-                contador+=1
-            if comp[1] not in diccionario.values():
-                diccionario[contador] = comp[1]
-                diccionario_inv[comp[1]] = contador
-                contador+=1
-            if -comp[0] not in diccionario.values():
-                diccionario[contador] = -comp[0]
-                diccionario_inv[-comp[0]] = contador
-                contador+=1
-            if -comp[1] not in diccionario.values():
-                diccionario[contador] = -comp[1]
-                diccionario_inv[-comp[1]] = contador
-                contador+=1
-
-        matriz = crear_matriz(len(atomos_libres))
-        matriz = llenar_matriz(matriz,diccionario, w1,w2,len(atomos_libres))
-
-        distancias, caminos = FloydWarshall(matriz, len(matriz),diccionario)
-        resp = ""
-        LTPs = 0
-    
-        for indice in range(len(euler)):
-            pareja = euler[indice]
-            conectado = int(pareja[1])
-            
-            costo = distancias[diccionario_inv[conectado]][diccionario_inv[-conectado]]
-            if indice!= len(euler)-1:
-                LTPs += costo
-            camino  = caminos[diccionario_inv[conectado]][diccionario_inv[-conectado]]
-            if len(camino)>2:
-                camino.pop(0)
-            resp += str(pareja)
-                
-            if indice!= len(euler)-1:
-                for numero in camino:
-                    
-                    resp+=","+str(numero)
-                
-            
-        resp+=" "+str(LTPs)
+    inicio = time.time() 
+    cases = int(stdin.readline().strip())
+    for _ in range(cases):
         
-    else:
-        resp = "NO HAY CAMINO"
-    
-    print(resp)
+        free = set()
+        lista = []
+         
+        n, w1, w2 = map(int, stdin.readline().strip().split())
+        for _ in range(n):
+            a1, a2 = map(int, stdin.readline().strip().split())
+            
+            free.add(a1)
+            free.add(-a1)
+            free.add(a2)
+            free.add(-a2)
+            
+            lista.append((a1, a2))
+    #n, w1, w2 = 3, 4,5
+    #lista=[(1, 2),(1, 3),(1, 37),(1, 5),(1, 30),(3, 37),(5,30)]
+
+        diccionario  ={}
+        euler = fleury(lista)
+        print("camino encontrado")
+        if euler is not None:
+            diccionario  ={}
+            diccionario_inv = {}
+            contador = 0
+            atomos_libres = set()
+            for comp in lista:
+                atomos_libres.add(comp[0])
+                atomos_libres.add(-comp[0])
+                atomos_libres.add(comp[1])
+                atomos_libres.add(-comp[1])
+                if comp[0] not in diccionario.values():
+                    diccionario[contador] = comp[0]
+                    diccionario_inv[comp[0]] = contador
+                    contador+=1
+                if comp[1] not in diccionario.values():
+                    diccionario[contador] = comp[1]
+                    diccionario_inv[comp[1]] = contador
+                    contador+=1
+                if -comp[0] not in diccionario.values():
+                    diccionario[contador] = -comp[0]
+                    diccionario_inv[-comp[0]] = contador
+                    contador+=1
+                if -comp[1] not in diccionario.values():
+                    diccionario[contador] = -comp[1]
+                    diccionario_inv[-comp[1]] = contador
+                    contador+=1
+            tamano = len(atomos_libres)
+            matriz = []
+            for i in range(tamano):
+            # Crea una nueva fila
+                fila = [0] * tamano
+                matriz.append(fila)
+            matriz = llenar_matriz(matriz,diccionario, w1,w2,tamano) 
+            dicc_minimos = {}
+            for source in atomos_libres: 
+                tupla = dijkstra(matriz,len(matriz),diccionario,diccionario_inv[source],diccionario_inv) 
+                dicc_minimos[source]= tupla
+            resp = ""
+            LTPs = 0
+        
+            for indice in range(len(euler)):
+                pareja = euler[indice]
+                conectado = int(pareja[1])
+                
+                costo = dicc_minimos[conectado][1]
+                if indice!= len(euler)-1:
+                    LTPs += costo
+                camino  = dicc_minimos[conectado][0]
+                if len(camino)>2:
+                    camino.pop(0)
+                resp += str(pareja)
+                    
+                if indice!= len(euler)-1:
+                    for n in range(len(camino)):
+                        
+                        resp+=","+str(camino[n])
+                        if n==len(camino)-1:
+                            resp+=","
+                    
+                
+            resp+=" "+str(LTPs)
+            
+        else:
+            resp = "NO HAY CAMINO"
+        
+        print(resp)
+    fin = time.time()
+    print(fin - inicio)
       
 main()
 
