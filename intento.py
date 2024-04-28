@@ -142,15 +142,30 @@ def fleury(parejas):
     
 def main():
     inicio = time.time() 
-    cases = int(stdin.readline().strip())
+    if (stdin == None):
+        cases = int(input("¿cuantos casos vas a crear?"))
+    else:
+        cases = int(stdin.readline().strip())
     for _ in range(cases):
         
         free = set()
         lista = []
-         
-        n, w1, w2 = map(int, stdin.readline().strip().split())
+        if (stdin == None):
+            x = 0
+            n = input("numero de elementos fundamentales:")
+            w1 = input("la constante uno:")
+            w2 = input("la constante dos:")
+            lisataElemntos = input("Pasa todos los elementos fundamentales separados por espacio y los ataomos por coma ejemplo(3,2 4,5) hay dos elementos fundamentales (3,2) y (4,5):").split()
+        else :
+            n, w1, w2 = map(int, stdin.readline().strip().split())
         for _ in range(n):
-            a1, a2 = map(int, stdin.readline().strip().split())
+            if (stdin == None):
+                atomos =  lisataElemntos[x].split(",")
+                a1 = int(atomos[0])
+                a2 = int(atomos[1])
+                x = x + 1
+            else :
+                a1, a2 = map(int, stdin.readline().strip().split())
             
             free.add(a1)
             free.add(-a1)
