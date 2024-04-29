@@ -142,7 +142,9 @@ def fleury(parejas):
     
 def main():
     inicio = time.time() 
+    #
     cases = int(stdin.readline().strip())
+    
     for _ in range(cases):
         
         free = set()
