@@ -225,7 +225,7 @@ def main():
                 conectado = int(pareja[1])
                 if conectado not in dicc_minimos.keys():
                     tupla = dijkstra(matriz,len(matriz),diccionario,diccionario_inv[conectado],diccionario_inv)
-                    print("dijkstra de ", conectado)
+                    
                     costo = tupla[1]
                     camino  = tupla[0]
                     dicc_minimos[conectado]= tupla
