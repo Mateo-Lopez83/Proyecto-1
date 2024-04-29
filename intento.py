@@ -1,6 +1,7 @@
 from sys import stdin
 import time
 import queue
+import heapq
 
 def dijkstra(graph, n, diccionario, source,diccionario_inv):
     distances = [float("inf")] * n
@@ -73,7 +74,7 @@ def llenar_matriz(matriz, diccionario, w1, w2, n):
     return matriz
 
         
-def impares(graph):
+def encontrar_impares(graph):
     impar = None
     a = graph.items()
     for node, neighbors in graph.items():
@@ -104,7 +105,7 @@ def hay_dfs(v, u, graph):
         return True
 
 
-def construir(parejas):
+def diccionario_ejes(parejas):
     graph = {}
     for elemento in parejas:
         a = elemento[0]
@@ -119,8 +120,8 @@ def construir(parejas):
 
 
 def fleury(parejas):
-    graph = construir(parejas)
-    inicial = impares(graph)
+    graph = diccionario_ejes(parejas)
+    inicial = encontrar_impares(graph)
     path = []
     for contador in range(len(parejas)):
         neighbors = graph[inicial]
@@ -143,29 +144,33 @@ def fleury(parejas):
 def main():
     inicio = time.time() 
     if (stdin == None):
-        cases = int(input("¿cuantos casos vas a crear?"))
+        cases = int(stdin.readline().strip())
+    
+        for _ in range(cases):
+            
+            free = set()
+            lista = []
+            
+            n, w1, w2 = map(int, stdin.readline().strip().split())
+            for _ in range(n):
+                a1, a2 = map(int, stdin.readline().strip().split())
+                
+                free.add(a1)
+                free.add(-a1)
+                free.add(a2)
+                free.add(-a2)
+                
+                lista.append((a1, a2))
     else:
         cases = int(stdin.readline().strip())
-    for _ in range(cases):
-        
-        free = set()
-        lista = []
-        if (stdin == None):
-            x = 0
-            n = input("numero de elementos fundamentales:")
-            w1 = input("la constante uno:")
-            w2 = input("la constante dos:")
-            lisataElemntos = input("Pasa todos los elementos fundamentales separados por espacio y los ataomos por coma ejemplo(3,2 4,5) hay dos elementos fundamentales (3,2) y (4,5):").split()
-        else :
+        for _ in range(cases):
+            
+            free = set()
+            lista = []
             n, w1, w2 = map(int, stdin.readline().strip().split())
         for _ in range(n):
-            if (stdin == None):
-                atomos =  lisataElemntos[x].split(",")
-                a1 = int(atomos[0])
-                a2 = int(atomos[1])
-                x = x + 1
-            else :
-                a1, a2 = map(int, stdin.readline().strip().split())
+            
+            a1, a2 = map(int, stdin.readline().strip().split())
             
             free.add(a1)
             free.add(-a1)
@@ -219,7 +224,8 @@ def main():
                 pareja = euler[indice]
                 conectado = int(pareja[1])
                 if conectado not in dicc_minimos.keys():
-                    tupla = dijkstra(matriz,len(matriz),diccionario,diccionario_inv[conectado],diccionario_inv) 
+                    tupla = dijkstra(matriz,len(matriz),diccionario,diccionario_inv[conectado],diccionario_inv)
+                    print("dijkstra de ", conectado)
                     costo = tupla[1]
                     camino  = tupla[0]
                     dicc_minimos[conectado]= tupla
@@ -249,7 +255,8 @@ def main():
         
         print(resp)
     fin = time.time()
-    print(fin - inicio)
+    print(round(fin-inicio))
+    
       
 main()
 
