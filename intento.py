@@ -228,7 +228,7 @@ def main():
                 costos[diccionario_inv[atomo]] = 0
                 caminos = [[] for __ in range(tamano)]
                 visited = [False for __ in range(tamano)]
-                camino, costo = dijkstra2(atomos_libres,costos, caminos, visited, atomo, w1, w2,diccionario,diccionario_inv=)
+                camino, costo = dijkstra2(atomos_libres,costos, caminos, visited, atomo, w1, w2,diccionario,diccionario_inv)
                 
             
             matriz = []
