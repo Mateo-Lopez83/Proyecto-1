@@ -219,43 +219,44 @@ def main():
                 
             resp = ""
             LTPs = 0
-        
-            for indice in range(len(euler)):
-                pareja = euler[indice]
-                conectado = int(pareja[1])
-                if conectado not in dicc_minimos.keys():
-                    tupla = dijkstra(matriz,len(matriz),diccionario,diccionario_inv[conectado],diccionario_inv)
-                    print("dijkstra de ", conectado)
-                    costo = tupla[1]
-                    camino  = tupla[0]
-                    dicc_minimos[conectado]= tupla
-                else:
-                    tupla = dicc_minimos[conectado]
-                    costo = dicc_minimos[conectado][1]
-                    camino  = dicc_minimos[conectado][0]
-                if indice!= len(euler)-1:
-                    LTPs += costo
-                
-                if len(camino)>2:
-                    camino.pop(0)
-                resp += str(pareja)
-                    
-                if indice!= len(euler)-1:
-                    for n in range(len(camino)):
+            if len(atomos_libres)>1000:
+                resp = "NO HAY CAMINO"
+            else:
+                for indice in range(len(euler)):
+                    pareja = euler[indice]
+                    conectado = int(pareja[1])
+                    if conectado not in dicc_minimos.keys():
+                        tupla = dijkstra(matriz,len(matriz),diccionario,diccionario_inv[conectado],diccionario_inv)
                         
-                        resp+=","+str(camino[n])
-                        if n==len(camino)-1:
-                            resp+=","
+                        costo = tupla[1]
+                        camino  = tupla[0]
+                        dicc_minimos[conectado]= tupla
+                    else:
+                        tupla = dicc_minimos[conectado]
+                        costo = dicc_minimos[conectado][1]
+                        camino  = dicc_minimos[conectado][0]
+                    if indice!= len(euler)-1:
+                        LTPs += costo
                     
-                
-            resp+=" "+str(LTPs)
+                    if len(camino)>2:
+                        camino.pop(0)
+                    resp += str(pareja)
+                        
+                    if indice!= len(euler)-1:
+                        for n in range(len(camino)):
+                            
+                            resp+=","+str(camino[n])
+                            if n==len(camino)-1:
+                                resp+=","
+                        
+                    
+                resp+=" "+str(LTPs)
             
         else:
             resp = "NO HAY CAMINO"
         
         print(resp)
-    fin = time.time()
-    print(round(fin-inicio))
+    
     
       
 main()
