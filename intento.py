@@ -28,6 +28,7 @@ def dijkstra(graph, n, diccionario, source,diccionario_inv):
     return (camino_opuesto, costo)
             
 
+    
 '''def FloydWarshall(graph, n, index_atom):
     distances = [[float("inf") for _ in range(n)] for _ in range(n)]
     path = [[[] for _ in range(n)] for _ in range(n)]
@@ -59,7 +60,18 @@ def calcular_LTP(m1, m2, w1, w2):
     else:
         return w2 - (abs(abs(m1) - abs(m2)) % w2)
     
-    
+def dijkstra2(atomos,costos, caminos, visited, atomo, w1, w2,diccionario, diccionario_inv):
+    while True:
+        if False not in visited:
+            actual = costos[diccionario_inv[atomo]]
+            for atom in atomos:
+                if atom!= atomo or atom!= -atomo:
+                    costo = calcular_LTP(atomo,atom, w1,w2)
+                    if actual + costo <costos[diccionario_inv[atomo]]:
+                        costos[diccionario_inv[atomo]] =actual+costo
+                        #yeah no ni idea
+                    
+        
 def llenar_matriz(matriz, diccionario, w1, w2, n):
     for i in range(n):
         for j in range(n):
@@ -209,7 +221,16 @@ def main():
                     diccionario[contador] = -comp[1]
                     diccionario_inv[-comp[1]] = contador
                     contador+=1
+            '''HACER GRAFO IMPLICITO AAA'''
             tamano = len(atomos_libres)
+            for atomo in atomos_libres:
+                costos = [float("inf") for __ in range(tamano)]
+                costos[diccionario_inv[atomo]] = 0
+                caminos = [[] for __ in range(tamano)]
+                visited = [False for __ in range(tamano)]
+                camino, costo = dijkstra2(atomos_libres,costos, caminos, visited, atomo, w1, w2,diccionario,diccionario_inv=)
+                
+            
             matriz = []
             for i in range(tamano):
                 fila = [0] * tamano
